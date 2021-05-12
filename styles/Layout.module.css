@@ -4,6 +4,14 @@
   background-size: cover;
   width: 100vw;
   height: 100vh;
+  display: grid;
+  place-items: center; 
+
+}
+
+.name {
+  font-weight: bold;
+  text-decoration:underline;
 }
 
 .footer {

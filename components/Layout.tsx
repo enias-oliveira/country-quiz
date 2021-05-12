@@ -18,7 +18,7 @@ const Layout = ({ children, title = 'Default title' }: Props): JSX.Element => (
     <div className={styles.container}>
       {children}
       <footer className={styles.footer}>
-        Created By Enias Oliveira, a challenge by devChallenges.io
+        Created By <span className={styles.name}>Enias Oliveira</span> - devChallenges.io
       </footer>
     </div>
   </>
