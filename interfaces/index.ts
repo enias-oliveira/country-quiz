@@ -3,3 +3,19 @@
 // example, to import the interface below do:
 //
 // import { User } from 'path/to/interfaces';
+
+export interface Quiz {
+  questionType: Question
+  alternatives: [string, string, string, string]
+  correctAlternative: string
+  capital?: string
+  flagUrl?: string
+}
+
+export type Question = 'flag' | 'capital'
+
+export interface Country {
+  name: string
+  capital: string
+  flagUrl: string
+}
