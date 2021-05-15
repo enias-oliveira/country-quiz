@@ -1,18 +1,16 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 
+import { getRandomCountryCode } from '../components/CountryCodes'
+
+import { getRandomIntInclusive, shuffleArray } from '../utils/helpers'
+
 import { Country, Question, Quiz } from '../interfaces'
 
 import styles from '@/styles/QuizCard.module.css'
 
 const QuizCard = (): JSX.Element => {
   const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)
-
-  const getRandomIntInclusive = (min: number, max: number): number => {
-    min = Math.ceil(min)
-    max = Math.floor(max)
-    return Math.floor(Math.random() * (max - min + 1) + min)
-  }
 
   const getQuestionType = (): Question => {
     return getRandomIntInclusive(0, 1) ? 'flag' : 'capital'
@@ -29,25 +27,30 @@ const QuizCard = (): JSX.Element => {
   }
 
   const getRandomCountry = async (): Country => {
-    try {
-      return await getCountry('xy')
-    } catch {
-      return await getCountry('us')
-    }
+    return getCountry(getRandomCountryCode())
+  }
+
+  const getAlternatives = async (quizCountry: Country): string[] => {
+    const randomCountries: Country[] = await Promise.all(
+      [...new Array(3)].map(async () => await getRandomCountry())
+    )
+    const shuffledCountriesAlternatives = shuffleArray([...randomCountries, quizCountry])
+
+    return shuffledCountriesAlternatives.map((countrieAlternative) => countrieAlternative.name)
   }
 
   const getRandomQuiz = useCallback(async (): Quiz => {
     const questionType = getQuestionType()
     const country = await getRandomCountry()
+    const alternatives = await getAlternatives(country)
 
     const quiz = {
       questionType: questionType,
-      alternatives: ['Gambia', country.name, 'Canada', 'Denmark'],
+      alternatives: alternatives,
       correctAlternative: country.name,
+      capital: country.capital,
+      flagUrl: country.flagUrl,
     }
-
-    //questionType === 'flag' ? (quiz.flagUrl = country.flagUrl) : (quiz.capital = country.capital)
-    quiz.capital = country.capital
 
     setQuiz(quiz)
   }, [])
