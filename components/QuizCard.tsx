@@ -31,12 +31,15 @@ const QuizCard = (): JSX.Element => {
   }
 
   const getAlternatives = async (quizCountry: Country): string[] => {
-    const randomCountries: Country[] = await Promise.all(
-      [...new Array(3)].map(async () => await getRandomCountry())
+    const randomCountriesNames: Country[] = await Promise.all(
+      [...new Array(3)].map(async () => {
+        const randomCountry = await getRandomCountry()
+        return randomCountry.name
+      })
     )
-    const shuffledCountriesAlternatives = shuffleArray([...randomCountries, quizCountry])
+    const shuffledCountriesAlternatives = shuffleArray([...randomCountriesNames, quizCountry.name])
 
-    return shuffledCountriesAlternatives.map((countrieAlternative) => countrieAlternative.name)
+    return shuffledCountriesAlternatives
   }
 
   const getRandomQuiz = useCallback(async (): Quiz => {
