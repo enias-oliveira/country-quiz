@@ -1,11 +1,9 @@
-import { getRandomIntInclusive } from '../utils/helpers'
-
 interface CountryCode {
   code: string
   name: string
 }
 
-const countryCodes: CountryCode[] = [
+const countriesCodes: CountryCode[] = [
   { code: 'AF', name: 'Afghanistan' },
   { code: 'AX', name: 'Aland Islands' },
   { code: 'AL', name: 'Albania' },
@@ -253,8 +251,4 @@ const countryCodes: CountryCode[] = [
   { code: 'ZW', name: 'Zimbabwe' },
 ]
 
-export const getRandomCountryCode = (): string => {
-  return countryCodes[getRandomIntInclusive(0, countryCodes.length)].code
-}
-
-export default countryCodes
+export default countriesCodes

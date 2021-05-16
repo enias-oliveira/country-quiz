@@ -4,7 +4,7 @@
    return Math.floor(Math.random() * (max - min + 1) + min)
  }
 
- export const shuffleArray = (array: unknown[]): unknown[] => {
+export const shuffleArray = (array: any[]): any[] => {
    const newArray = [...array]
    return newArray.sort(() => (Math.random() > 0.5 ? 1 : -1))
  }
