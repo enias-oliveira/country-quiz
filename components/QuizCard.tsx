@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import axios from 'axios'
 
+import Image from 'next/image'
+
 import { getRandomCountryCode } from '../components/CountryCodes'
 
 import { getRandomIntInclusive, shuffleArray } from '../utils/helpers'
@@ -62,11 +64,17 @@ const QuizCard = (): JSX.Element => {
 
   console.log(quiz)
 
+  const CAPITAL_QUESTION = `${quiz?.capital} is the capital of`
+  const FLAG_QUESTION = 'Which country does this flag belongs to?'
+
   return (
     <>
       {quiz && (
         <div className={styles.container}>
-          <h2>{quiz.capital} is the capital of</h2>
+          {quiz.questionType == 'flag' && (
+            <Image src={quiz.flagUrl} alt={`${quiz.name} flag`} width={84} height={54} />
+          )}
+          <h2>{quiz.questionType === 'capital' ? CAPITAL_QUESTION : FLAG_QUESTION}</h2>
           <button>
             <span>A</span> - {quiz.alternatives[0]}
           </button>
