@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 
 import { getRandomIntInclusive, shuffleArray } from '../../utils/helpers'
 import { Country, Question } from '../../interfaces'
@@ -24,7 +24,15 @@ export const getCountry = async (countryCode: string): Promise<Country> => {
 }
 
 export const getRandomCountry = async (): Promise<Country> => {
-  return await getCountry(getRandomCountryCode())
+  try {
+    return await getCountry(getRandomCountryCode())
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return await getCountry(getRandomCountryCode())
+    } else {
+      throw error
+    }
+  }
 }
 
 export const getAlternatives = async (quizCountryName: string): Promise<string[]> => {

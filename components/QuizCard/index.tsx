@@ -25,18 +25,22 @@ const QuizCard = (): JSX.Element => {
     })
   }
 
-  useEffect(() => {
-    getRandomQuiz()
-  }, [handleButton])
-
-  const CAPITAL_QUESTION = `${quiz?.capital} is the capital of`
-  const FLAG_QUESTION = 'Which country does this flag belongs to?'
-
   const handleButton = (selectedAlternative: string): void => {
     if (selectedAlternative === quiz.correctAlternative) {
       setCorrectCount(correctCount + 1)
     }
+
+    getRandomQuiz()
   }
+
+  useEffect(() => {
+    getRandomQuiz()
+  }, [])
+
+  const CAPITAL_QUESTION = `${quiz?.capital} is the capital of`
+  const FLAG_QUESTION = 'Which country does this flag belongs to?'
+
+  const ALTERNATIVES_LETTERS = ['A', 'B', 'C', 'D']
 
   return (
     <>
@@ -47,18 +51,13 @@ const QuizCard = (): JSX.Element => {
           )}
           <h2>{quiz.questionType === 'capital' ? CAPITAL_QUESTION : FLAG_QUESTION}</h2>
 
-          <button onClick={() => handleButton(quiz.alternatives[0])}>
-            <span>A</span> {quiz.alternatives[0]}
-          </button>
-          <button onClick={() => handleButton(quiz.alternatives[1])}>
-            <span>B</span> {quiz.alternatives[1]}
-          </button>
-          <button onClick={() => handleButton(quiz.alternatives[2])}>
-            <span>C</span> {quiz.alternatives[2]}
-          </button>
-          <button onClick={() => handleButton(quiz.alternatives[3])}>
-            <span>D</span> {quiz.alternatives[3]}
-          </button>
+          {quiz.alternatives.map((alternative, idx) => {
+            return (
+              <button key={idx} onClick={() => handleButton(quiz.alternatives[idx])}>
+                <span>{ALTERNATIVES_LETTERS[idx]}</span> {quiz.alternatives[idx]}
+              </button>
+            )
+          })}
         </div>
       )}
       <h4>{correctCount}</h4>
