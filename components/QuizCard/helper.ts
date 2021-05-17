@@ -1,4 +1,4 @@
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 
 import { getRandomIntInclusive, shuffleArray } from '../../utils/helpers'
 import { Country, Question } from '../../interfaces'

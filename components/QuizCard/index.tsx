@@ -10,6 +10,7 @@ import styles from '@/styles/QuizCard.module.css'
 const QuizCard = (): JSX.Element => {
   const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)
   const [correctCount, setCorrectCount] = useState<number>(0)
+  const [isQuizAnswered, setIsQuizAnswered] = useState<boolean>(false)
 
   const getRandomQuiz = async (): Quiz => {
     const questionType = getQuestionType()
@@ -30,12 +31,17 @@ const QuizCard = (): JSX.Element => {
       setCorrectCount(correctCount + 1)
     }
 
-    getRandomQuiz()
+    setIsQuizAnswered(true)
   }
 
   useEffect(() => {
     getRandomQuiz()
   }, [])
+
+  const handleNextButton = (): void => {
+    setIsQuizAnswered(false)
+    getRandomQuiz()
+  }
 
   const CAPITAL_QUESTION = `${quiz?.capital} is the capital of`
   const FLAG_QUESTION = 'Which country does this flag belongs to?'
@@ -58,6 +64,12 @@ const QuizCard = (): JSX.Element => {
               </button>
             )
           })}
+
+          {isQuizAnswered && (
+            <div>
+              <button onClick={handleNextButton}>Next</button>
+            </div>
+          )}
         </div>
       )}
       <h4>{correctCount}</h4>
