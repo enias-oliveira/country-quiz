@@ -7,7 +7,7 @@
 export interface Quiz {
   questionType: Question
   alternatives: [string, string, string, string]
-  correctAlternative: string
+  correctAlternativeIndex: number
   capital?: string
   flagUrl?: string
 }

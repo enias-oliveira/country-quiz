@@ -11,24 +11,43 @@ const QuizCard = (): JSX.Element => {
   const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)
   const [correctCount, setCorrectCount] = useState<number>(0)
   const [isQuizAnswered, setIsQuizAnswered] = useState<boolean>(false)
+  const [alternativeBackgroundColor, setAlternativeBackgroundColor] = useState<string[]>([
+    '',
+    '',
+    '',
+    '',
+  ])
 
-  const getRandomQuiz = async (): Quiz => {
+  const getRandomQuiz = async (): void => {
     const questionType = getQuestionType()
     const country = await getRandomCountry()
     const alternatives = await getAlternatives(country.name)
-
-    setQuiz({
+    const randomQuiz: Quiz = {
       questionType: questionType,
       alternatives: alternatives,
-      correctAlternative: country.name,
+      correctAlternativeIndex: alternatives.findIndex((element) => element === country.name),
       capital: country.capital,
       flagUrl: country.flagUrl,
-    })
+    }
+
+    setQuiz(randomQuiz)
   }
 
-  const handleButton = (selectedAlternative: string): void => {
-    if (selectedAlternative === quiz.correctAlternative) {
+  const handleButton = (selectedAlternativeIdx: string): void => {
+    if (selectedAlternativeIdx === quiz?.correctAlternativeIndex) {
+      setAlternativeBackgroundColor((prevState) => {
+        const newState = [...prevState]
+        newState[selectedAlternativeIdx] = 'green'
+        return newState
+      })
       setCorrectCount(correctCount + 1)
+    } else {
+      setAlternativeBackgroundColor((prevState) => {
+        const newState = [...prevState]
+        newState[selectedAlternativeIdx] = 'red'
+        newState[quiz?.correctAlternativeIndex] = 'green'
+        return newState
+      })
     }
 
     setIsQuizAnswered(true)
@@ -40,6 +59,7 @@ const QuizCard = (): JSX.Element => {
 
   const handleNextButton = (): void => {
     setIsQuizAnswered(false)
+    setAlternativeBackgroundColor(['', '', '', ''])
     getRandomQuiz()
   }
 
@@ -59,7 +79,11 @@ const QuizCard = (): JSX.Element => {
 
           {quiz.alternatives.map((alternative, idx) => {
             return (
-              <button key={idx} onClick={() => handleButton(quiz.alternatives[idx])}>
+              <button
+                style={{ backgroundColor: alternativeBackgroundColor[idx] }}
+                key={idx}
+                onClick={() => handleButton(idx)}
+              >
                 <span>{ALTERNATIVES_LETTERS[idx]}</span> {quiz.alternatives[idx]}
               </button>
             )
