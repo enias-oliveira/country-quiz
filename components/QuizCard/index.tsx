@@ -11,12 +11,22 @@ const QuizCard = (): JSX.Element => {
   const [quiz, setQuiz] = useState<Quiz | undefined>(undefined)
   const [correctCount, setCorrectCount] = useState<number>(0)
   const [isQuizAnswered, setIsQuizAnswered] = useState<boolean>(false)
+  const [isQuizEnded, setIsQuizEnded] = useState<boolen>(false)
+
   const [alternativeBackgroundColor, setAlternativeBackgroundColor] = useState<string[]>([
     '',
     '',
     '',
     '',
   ])
+
+  const resetQuiz = async (): void => {
+    setCorrectCount(0)
+    setIsQuizAnswered(false)
+    setIsQuizEnded(false)
+    setAlternativeBackgroundColor(['', '', '', ''])
+    await getRandomQuiz()
+  }
 
   const getRandomQuiz = async (): void => {
     const questionType = getQuestionType()
@@ -34,23 +44,23 @@ const QuizCard = (): JSX.Element => {
   }
 
   const handleButton = (selectedAlternativeIdx: string): void => {
-    if (selectedAlternativeIdx === quiz?.correctAlternativeIndex) {
-      setAlternativeBackgroundColor((prevState) => {
-        const newState = [...prevState]
-        newState[selectedAlternativeIdx] = 'green'
-        return newState
-      })
-      setCorrectCount(correctCount + 1)
-    } else {
+    if (selectedAlternativeIdx !== quiz?.correctAlternativeIndex) {
       setAlternativeBackgroundColor((prevState) => {
         const newState = [...prevState]
         newState[selectedAlternativeIdx] = 'red'
         newState[quiz?.correctAlternativeIndex] = 'green'
         return newState
       })
+      setIsQuizEnded(true)
+    } else {
+      setAlternativeBackgroundColor((prevState) => {
+        const newState = [...prevState]
+        newState[selectedAlternativeIdx] = 'green'
+        return newState
+      })
+      setCorrectCount(correctCount + 1)
+      setIsQuizAnswered(true)
     }
-
-    setIsQuizAnswered(true)
   }
 
   useEffect(() => {
@@ -58,9 +68,11 @@ const QuizCard = (): JSX.Element => {
   }, [])
 
   const handleNextButton = (): void => {
-    setIsQuizAnswered(false)
-    setAlternativeBackgroundColor(['', '', '', ''])
-    getRandomQuiz()
+    if (!isQuizEnded) {
+      setIsQuizAnswered(false)
+      setAlternativeBackgroundColor(['', '', '', ''])
+      getRandomQuiz()
+    }
   }
 
   const CAPITAL_QUESTION = `${quiz?.capital} is the capital of`
@@ -96,7 +108,12 @@ const QuizCard = (): JSX.Element => {
           )}
         </div>
       )}
-      <h4>{correctCount}</h4>
+      {isQuizEnded && (
+        <div>
+          <h4>{correctCount}</h4>
+          <button onClick={resetQuiz}>New Game</button>
+        </div>
+      )}
     </>
   )
 }
